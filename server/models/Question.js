@@ -8,10 +8,10 @@ const questionSchema = new Schema({
     trim: true,
     required: 'Question\'s title is required'
   },
-  body: {
+  content: {
     type: String,
     trim: true,
-    required: 'Question\'s body is required'
+    required: 'Question\'s content is required'
   },
   slug: {
     type: String,
@@ -20,19 +20,34 @@ const questionSchema = new Schema({
   author: {
     type: Schema.Types.ObjectId,
     ref: 'User'
-  },
-  votes: [{
-    type: Schema.Types.ObjectId,
-    ref: 'Vote'
-  }],
-  answers: [{
-    type: Schema.Types.ObjectId,
-    ref: 'answer'
-  }]
-
-}, { timestamps: true });
+  }
+}, { timestamps: true, toJSON: { virtuals: true }, toObject: { virtuals: true } });
 
 questionSchema.index({ slug: 1 });
+
+questionSchema.statics.getQuestions = function() {
+  return this.aggregate([
+    { $lookup: { 
+      from: 'answers', localField: 'slug',
+      foreignField: 'question', as: 'answers' }},
+    { $lookup: { 
+      from: 'users', localField: 'author', 
+      foreignField: '_id', as: 'author' }},
+    { $lookup: {
+      from: 'votes', localField: 'slug', 
+      foreignField: 'question', as: 'votes' }}, 
+    { $project: {
+      title: '$$ROOT.title',
+      content: '$$ROOT.content',
+      author: '$author',
+      slug: '$$ROOT.slug',
+      answers: { $size: '$answers'},
+      votes: { $sum: '$votes.value'},
+      createdAt: '$$ROOT.createdAt',
+      updatedAT: '$$ROOT.updatedAt'
+    }}
+  ])
+}
 
 questionSchema.pre('save', async function (next) {
   if(!this.isModified('title')) {
@@ -51,6 +66,14 @@ questionSchema.pre('save', async function (next) {
   }
   next();
 });
+
+// questionSchema.virtual('votes', {
+//   ref: 'Vote',
+//   localField: '_id',
+//   foreignField: 'question'
+// });
+
+// questionSchema.pre('findOne', autopopulate);
 
 const Question = mongoose.model('Question', questionSchema);
 

@@ -7,12 +7,15 @@ const voteSchema = new Schema({
     ref: 'User'
   },
   question: {
-    type: Schema.Types.ObjectId,
+    type: Schema.Types.String,
     ref: 'Question'
   },
   answer: {
     type: Schema.Types.ObjectId,
     ref: 'Answer'
+  },
+  value: {
+    type: Number
   }
 
 }, { timestamps: true });

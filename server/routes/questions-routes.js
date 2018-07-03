@@ -6,6 +6,7 @@ const {
   checkValidation } = require('./../middlewares/validation'); 
 const authMiddlewares = require('./../middlewares/auth-middlewares');
 const { catchErrors } = require('../handlers/errorHandlers');
+const answersRoutes = require('./answers-routes');
 
 router.route('/')
   .post(
@@ -15,7 +16,7 @@ router.route('/')
     catchErrors(questionsControllers.createQuestion)
   )
   .get(
-    catchErrors(questionsControllers.fetchAllQuestions)
+    catchErrors(questionsControllers.fetchQuestions)
   );
 
 router.route('/:slug')
@@ -29,6 +30,16 @@ router.route('/:slug')
   .put(
     authMiddlewares.verifyToken,
     catchErrors(questionsControllers.updateQuestion)
-  )
+  );
+
+router.post('/:slug/upvote',
+  authMiddlewares.verifyToken,
+  catchErrors(questionsControllers.upvote));
+
+router.post('/:slug/downvote',
+  authMiddlewares.verifyToken,
+  catchErrors(questionsControllers.downvote));
+
+router.use('/:slug/answers', answersRoutes)
 
 module.exports = router;

@@ -1,9 +1,9 @@
-const { Question } = require('../models');
+const { Question, Vote } = require('../models');
 
 exports.createQuestion = async (req, res) => {
   const inputData = {
     title: req.body.title,
-    body: req.body.body,
+    content: req.body.content,
     author: req.user.id,
   };
 
@@ -15,13 +15,10 @@ exports.createQuestion = async (req, res) => {
   });
 };
 
-exports.fetchAllQuestions = async (req, res) => {
-  const questions = await Question.find().populate({
-    path: 'author',
-    model: 'User',
-    select: '-password -createdAt -updatedAt'
-  });
-
+exports.fetchQuestions = async (req, res) => {
+  // const questions = await Question.find();
+  const questions = await Question.getQuestions();
+  
   res.status(200).json({
     message: 'Questions retrieved successfully',
     questions,
@@ -34,12 +31,12 @@ exports.fetchQuestionBySlug = async (req, res) => {
 
   if (question) {
     res.status(200).json({
-      message: 'Article retrieved successfully',
+      message: 'Question retrieved successfully',
       question,
     });
   } else {
     res.status(404).json({
-      message: 'Article not found',
+      message: 'Question not found',
     });
   }
 };
@@ -50,11 +47,8 @@ exports.updateQuestion = async (req, res) => {
   const updateData = {};
 
   if (req.body.title) updateData.title = req.body.title;
-  if (req.body.body) updateData.body = req.body.body;
+  if (req.body.content) updateData.content = req.body.content;
 
-  // const question = await Question.findOneAndUpdate({ 
-  //   slug, author: req.user.id 
-  // }, updateData, { new: true, runValidators: true }).exec();
   const question = await Question.findOne({ slug, author: req.user.id });
 
   if (question) {
@@ -96,3 +90,70 @@ exports.deleteQuestion = async (req, res) => {
     });
   }
 };
+
+exports.upvote = async (req, res) => {
+  const { slug } = req.params;
+  const vote = await Vote.findOne({ question: slug, voter: req.user.id });
+  if (vote && vote.value === -1) {
+    vote.value = 1;
+    await vote.save()
+    return res.status(200).json({
+      message: 'Upvote question',
+      vote
+    });
+  }
+
+  if (vote) {
+    const deletedVote = await Vote.findByIdAndRemove(vote._id);
+    return res.status(200).json({
+      message: 'Vote deleted',
+      deletedVote
+    })
+  }
+  const question = await Question.findOne({ slug, author: req.user.id });
+
+  if (!question) {
+    const newVote = await Vote.create({ question: slug, voter: req.user.id, value: 1 });
+    return res.status(201).json({
+      message: 'Upvote added',
+      upvote: newVote
+    });
+  }
+  return res.status(403).json({
+    message: 'You cannot upvote your own question'
+  })
+}
+
+exports.downvote = async (req, res) => {
+  const { slug } = req.params;
+  const vote = await Vote.findOne({ question: slug, voter: req.user.id });
+  if (vote && vote.value === 1) {
+    vote.value = -1;
+    await vote.save()
+    return res.status(200).json({
+      message: 'Downvote question',
+      vote
+    });
+  }
+
+  if (vote) {
+    const deletedVote = await Vote.findByIdAndRemove(vote._id);
+    return res.status(200).json({
+      message: 'Vote deleted',
+      deletedVote
+    });
+  }
+
+  const question = await Question.findOne({ slug, author: req.user.id, });
+
+  if (!question) {
+    const newVote = await Vote.create({ question: slug, voter: req.user.id, value: -1 });
+    return res.status(201).json({
+      message: 'Downvote added',
+      upvote: newVote
+    });
+  }
+  return res.status(403).json({
+    message: 'You cannot upvote your own question'
+  })
+}

@@ -62,10 +62,17 @@ exports.validateAddQuestion = [
     .trim()
     .isString()
     .not().isEmpty().withMessage('Title must not be empty'),
-  body('body')
+  body('content')
     .trim()
     .isString()
-    .not().isEmpty().withMessage('Body must not be empty')
+    .not().isEmpty().withMessage('Content must not be empty')
+];
+
+exports.validateAddAnswer = [
+  body('content')
+    .trim()
+    .isString()
+    .not().isEmpty().withMessage('Content must not be empty')
 ];
 
 exports.checkValidation = (req, res, next)  => {
