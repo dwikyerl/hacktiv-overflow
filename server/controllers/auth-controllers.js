@@ -4,26 +4,17 @@ const jwt = require('jsonwebtoken');
 
 jwt.sign = util.promisify(jwt.sign);
 
-exports.signin = async (req, res) => {
+exports.login = async (req, res) => {
   const user = await User.isValidUser(req.body.username);
   if (!user) {
     return res.status(400).json({
-      message: 'Invalid username / email / password',
+      message: 'Invalid username or password',
     });
   }
   
   const match = await user.matchPassword(req.body.password);
   if (match) {
-    const token = await jwt.sign(
-      {
-        id: user.id,
-        name: user.name,
-        username: user.username,
-        email: user.email,
-        role: user.role
-      },
-      process.env.SECRET_KEY
-    );
+    const token = await user.generateToken();
 
     res.status(200).json({
       message: 'Signed In Successfully',
@@ -31,7 +22,7 @@ exports.signin = async (req, res) => {
     });
   } else {
     res.status(400).json({
-      message: 'Invalid username / email / password',
+      message: 'Invalid username or password',
     });
   }
 };

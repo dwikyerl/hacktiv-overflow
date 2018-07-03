@@ -2,7 +2,7 @@ const { validationResult, body } = require('express-validator/check');
 const { sanitizeBody } = require('express-validator/filter');
 const { User } = require('./../models');
 
-exports.validateRegister = [
+exports.validateSignup = [
   body('email')
     .not().isEmpty().withMessage('Email must not be empty')
     .isEmail()
@@ -42,7 +42,7 @@ exports.validateRegister = [
     })
 ];
 
-exports.validateSignin = [
+exports.validateLogin = [
   body('username')
     .not().isEmpty().withMessage('Username must not be empty')
     .isString()
@@ -55,6 +55,17 @@ exports.validateSignin = [
     }),
   body('password')
     .not().isEmpty().withMessage('Password must not be empty')
+];
+
+exports.validateAddQuestion = [
+  body('title')
+    .trim()
+    .isString()
+    .not().isEmpty().withMessage('Title must not be empty'),
+  body('body')
+    .trim()
+    .isString()
+    .not().isEmpty().withMessage('Body must not be empty')
 ];
 
 exports.checkValidation = (req, res, next)  => {

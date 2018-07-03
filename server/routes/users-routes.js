@@ -1,13 +1,14 @@
 const router = require('express').Router();
 const { usersControllers } = require('./../controllers');
-const { validateRegister, checkValidation } = require('./../middlewares/validation');
+const { validateSignup, checkValidation } = require('./../middlewares/validation');
 const authMiddlewares = require('./../middlewares/auth-middlewares');
+const { catchErrors } = require('../handlers/errorHandlers');
 
 router.post(
-  '/register',
-  validateRegister,
+  '/signup',
+  validateSignup,
   checkValidation,
-  usersControllers.register,
+  catchErrors(usersControllers.signup),
 );
 
 router.get(

@@ -1,4 +1,14 @@
 {
+  "name": "hackiv-overflow-server",
+  "version": "1.0.0",
+  "description": "Server script for hacktiv-overflow app",
+  "main": "app.js",
+  "author": "Dwiky Erlangga <dwikyerl@gmail.com>",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js"
+  },
+  "license": "MIT",
   "dependencies": {
     "bcrypt": "^2.0.1",
     "cors": "^2.8.4",
@@ -7,6 +17,7 @@
     "express-validator": "^5.2.0",
     "jsonwebtoken": "^8.3.0",
     "mongoose": "^5.1.7",
-    "morgan": "^1.9.0"
+    "morgan": "^1.9.0",
+    "slug": "^0.9.1"
   }
 }

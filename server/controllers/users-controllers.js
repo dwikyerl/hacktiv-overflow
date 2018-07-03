@@ -1,11 +1,10 @@
 const { User } = require('../models');
 
-exports.register = async (req, res) => {
+exports.signup = async (req, res) => {
   const registerData = {
     username: req.body.username,
     email: req.body.email,
     password: req.body.password,
-    role: 'user',
   };
 
   await User.create(registerData);
@@ -18,7 +17,6 @@ exports.getUserInfo = async (req, res) => {
     id: req.user.id,
     username: req.user.username,
     email: req.user.email,
-    role: req.user.role
   };
 
   res.status(200).json({ 

@@ -1,6 +1,10 @@
 const mongoose = require("mongoose");
 const { Schema } = mongoose;
 const bcrypt = require("bcrypt");
+const util = require('util');
+const jwt = require('jsonwebtoken');
+
+jwt.sign = util.promisify(jwt.sign);
 
 const userSchema = new Schema(
   {
@@ -33,6 +37,20 @@ userSchema.methods.matchPassword = async function(passwordString) {
   const match = await bcrypt.compare(passwordString, this.password);
   return match;
 };
+
+userSchema.methods.generateToken = async function() {
+  const user = this;
+  const token = await jwt.sign({
+      id: user.id,
+      name: user.name,
+      username: user.username,
+      email: user.email,
+    },
+    process.env.SECRET_KEY
+  );
+
+  return token;
+}
 
 userSchema.statics.isValidUser = function(username) {
   const criteria = !username.includes("@")
