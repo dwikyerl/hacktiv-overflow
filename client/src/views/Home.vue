@@ -37,7 +37,7 @@ export default {
 
 <style lang="scss">
 .home {
-  background-color: #e0e0e0;
+  background-color: #e3f2fd;
   min-height: 100vh;
 }
 .hero-text {

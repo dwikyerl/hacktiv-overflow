@@ -79,7 +79,7 @@ export default {
 <style lang="scss">
 .question {
   min-height: 100vh;
-  background-color: #a2120a;
+  background-color: #e8eaf6;
 
   &__header {
     margin-bottom: 2rem;

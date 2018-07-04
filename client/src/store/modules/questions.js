@@ -47,13 +47,12 @@ const mutations = {
     state.questionAnswers = [...state.questionAnswers, answer]
   },
   updateAnswer (state, addedAnswer) {
-    state.questionAnswers = state.questionAnswers.map((answer) => {
-      if (answer._id === addedAnswer._id) {
-        console.log(addedAnswer)
-        return addedAnswer
-      }
-      return answer
-    })
+    state.questionAnswers = [
+      ...state.questionAnswers.filter((answer) => {
+        return answer._id !== addedAnswer._id
+      }),
+      addedAnswer
+    ]
   },
   deleteAnswer (state, answerId) {
     state.questionAnswers = state.questionAnswers.filter((answer) => {
@@ -89,8 +88,7 @@ const actions = {
     try {
       const { data } = await axios.get(`/questions/${slug}`)
       commit('setQuestionVotes', data.question.votes)
-      const answers = cloneDeep(data.question.answers)
-      commit('setQuestionAnswers', answers)
+      commit('setQuestionAnswers', data.question.answers)
       commit('setQuestion', data.question)
     } catch (e) {
       console.log(e.response)
@@ -173,7 +171,7 @@ const actions = {
     try {
       const url = `/questions/${slug}/answers/${answerId}`
       const { data } = await axios.put(url, updateData)
-      commit('addAnswer', data.answer)
+      commit('updateAnswer', data.answer)
       this._vm.$toast.open({
         duration: 1000,
         message: 'Answer updated successfully',
@@ -187,7 +185,6 @@ const actions = {
         type: 'is-danger'
       })
     }
-    router.push({ name: 'question', params: { slug } })
   },
   async deleteAnswer ({ commit }, { slug, answerId }) {
     try {

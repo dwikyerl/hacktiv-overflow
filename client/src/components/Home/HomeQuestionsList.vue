@@ -5,12 +5,15 @@
         <h1 class="is-size-4 is-child">All Questions</h1>
       </div>
     </div>
-    <div v-if="questions" class="h-questions__list">
+    <div v-if="questions.length > 0" class="h-questions__list">
       <vh-question-card
         v-for="question in questions"
         :key="question._id"
         :question="question">
       </vh-question-card>
+    </div>
+    <div v-else>
+      <h2>There is no question here, please make a new question</h2>
     </div>
   </div>
 </template>
