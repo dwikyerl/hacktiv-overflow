@@ -45,7 +45,7 @@
 <script>
 import moment from 'moment'
 import axios from '@/axios'
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 
 export default {
   name: 'AnswerCard',
@@ -75,6 +75,20 @@ export default {
     }
   },
   methods: {
+    ...mapActions('questions', ['deleteAnswer']),
+    submitDeleteAnswer () {
+      this.$dialog.confirm({
+        title: 'Deleting Answer',
+        message: 'Are you sure you want to <b>delete</b> this Answer? This action cannot be undone.',
+        confirmText: 'Delete answer',
+        type: 'is-danger',
+        hasIcon: true,
+        onConfirm: () => this.deleteAnswer({
+          slug: this.slug,
+          answerId: this.answerId
+        })
+      })
+    },
     addNewVote (newVote) {
       this.answerVotes = [...this.answerVotes, newVote]
     },

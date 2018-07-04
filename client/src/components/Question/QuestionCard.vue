@@ -68,7 +68,7 @@ export default {
     ...mapActions('questions', ['deleteQuestion', 'upvoteQuestion', 'downvoteQuestion']),
     submitDeleteQuestion () {
       this.$dialog.confirm({
-        title: 'Deleting Article',
+        title: 'Deleting Question',
         message: 'Are you sure you want to <b>delete</b> this question? This action cannot be undone.',
         confirmText: 'Delete Question',
         type: 'is-danger',

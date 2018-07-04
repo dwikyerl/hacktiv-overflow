@@ -5,13 +5,15 @@ import router from './../../router'
 const state = {
   questions: [],
   question: null,
-  questionVotes: null
+  questionVotes: null,
+  questionAnswers: null
 }
 
 const getters = {
   questions: state => [...state.questions],
   question: state => cloneDeep(state.question),
-  questionVotes: state => cloneDeep(state.questionVotes)
+  questionVotes: state => cloneDeep(state.questionVotes),
+  questionAnswers: state => cloneDeep(state.questionAnswers)
 }
 
 const mutations = {
@@ -37,6 +39,14 @@ const mutations = {
   },
   setQuestionVotes (state, questionVotes) {
     state.questionVotes = questionVotes
+  },
+  setQuestionAnswers (state, questionAnswers) {
+    state.questionAnswers = questionAnswers
+  },
+  deleteAnswer (state, answerId) {
+    state.questionAnswers = state.questioAnsquestionAnswerss.filter((answer) => {
+      return answer._id !== answerId
+    })
   },
   addNewVote (state, newVote) {
     state.questionVotes = [...state.questionVotes, newVote]
@@ -67,6 +77,7 @@ const actions = {
     try {
       const { data } = await axios.get(`/questions/${slug}`)
       commit('setQuestionVotes', data.question.votes)
+      commit('setQuestionAnswers', data.question.answers)
       commit('setQuestion', data.question)
     } catch (e) {
       console.log(e.response)
@@ -126,6 +137,26 @@ const actions = {
       })
     }
     router.push({ name: 'home' })
+  },
+  async deleteAnswer ({ commit }, { slug, answerId }) {
+    try {
+      const url = `/questions/${slug}/answers/${answerId}`
+      const { data } = await axios.delete(url)
+      commit('deleteAnswer', data.deletedAnswer._id)
+      this._vm.$toast.open({
+        duration: 1000,
+        message: 'Answer Deleted successfully',
+        type: 'is-info'
+      })
+    } catch (e) {
+      console.log(e.response)
+      this._vm.$toast.open({
+        duration: 1000,
+        message: 'Failed to delete answer',
+        type: 'is-danger'
+      })
+    }
+    router.push({ name: 'question', params: { slug } })
   },
   async upvoteQuestion ({ commit }, slug) {
     try {

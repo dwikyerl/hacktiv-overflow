@@ -14,7 +14,9 @@
               <h3 class="question__subtitle">
                 {{ totalAnswers }} Answers
               </h3>
-              <vq-answer-card v-if="renderAnswer" v-for="answer in this.question.answers"
+              <vq-answer-card
+                v-if="renderAnswer"
+                v-for="answer in this.questionAnswers"
                 :key="answer._id"
                 :answerId="answer._id"></vq-answer-card>
             </div>
@@ -47,7 +49,7 @@ export default {
     'vq-answer-card': AnswerCard
   },
   computed: {
-    ...mapGetters('questions', ['question']),
+    ...mapGetters('questions', ['question', 'questionAnswers']),
     renderAnswer () {
       return this.question.answers[0].author.length > 0
     },
