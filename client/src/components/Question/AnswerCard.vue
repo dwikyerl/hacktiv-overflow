@@ -1,14 +1,20 @@
 <template>
-  <div class="answer-card">
+  <div v-if="answer" class="answer-card">
     <div class="answer-card__vote">
-      <a @click="upvote" class="answer-card__vote-arrow">
+      <a
+        @click="() => vote('upvote')"
+        class="answer-card__vote-arrow"
+        :class="{ disabled: isThisAnswerOwner }">
         <b-icon
           custom-size="mdi-48px"
           custom-class="answer-card__vote-arrow-icon"
           icon="menu-up"></b-icon>
       </a>
-      <p class="answer-card__vote-total">{{ answer.totalVotes }}</p>
-      <a @click="downvote" class="answer-card__vote-arrow">
+      <p class="answer-card__vote-total">{{ totalVotes }}</p>
+      <a
+        @click="() => vote('downvote')"
+        class="answer-card__vote-arrow"
+        :class="{ disabled: isThisAnswerOwner }">
         <b-icon
           custom-size="mdi-48px"
           custom-class="answer-card__vote-arrow-icon"
@@ -18,10 +24,18 @@
     <div class="answer-card__answer">
       <div class="answer-card__content" v-html="answer.content"></div>
       <div class="answer-card__extras">
-        <a class="is-pulled-right">Edit</a>
+        <div v-if="isThisAnswerOwner" class="level is-mobile question-card__options">
+          <div class="level-item">
+            <a @click.prevent="submitDeleteAnswer">Delete</a>
+          </div>
+          <div class="level-item">
+            <router-link
+              :to="{ name: 'edit-question', params: { slug: this.slug }}" class="is-pulled-right">Edit</router-link>
+          </div>
+        </div>
         <div class="answer-card__info is-pulled-right">
           <span class="has-text-weight-light">answered at {{ formattedTime }} by </span>
-          <span class="answer-card__author">{{ answer.author[0] }}</span>
+          <span class="answer-card__author">{{ answer.author.username }}</span>
         </div>
       </div>
     </div>
@@ -29,32 +43,75 @@
 </template>
 
 <script>
-export default {
-  name: 'AnswerCard'
-}
-</script>
-
-<script>
-import { mapGetters } from 'vuex'
 import moment from 'moment'
+import axios from '@/axios'
+import { mapGetters } from 'vuex'
 
 export default {
-  name: 'Question',
+  name: 'AnswerCard',
   props: {
-    answer: Object
+    answerId: String
+  },
+  data () {
+    return {
+      answer: null,
+      answerVotes: null,
+      slug: this.$route.params.slug
+    }
   },
   computed: {
+    ...mapGetters('user', ['username', 'id']),
     formattedTime () {
-      return moment(this.answer.createdAt).fromNow()
+      return moment(this.answer.createdAt).format('MMM D YYYY, h:mm a')
     },
+    totalVotes () {
+      return this.answerVotes.reduce((acc, vote) => {
+        acc += +vote.value
+        return acc
+      }, 0)
+    },
+    isThisAnswerOwner () {
+      return this.answer.author.username === this.username
+    }
   },
   methods: {
-    upvote () {
-
+    addNewVote (newVote) {
+      this.answerVotes = [...this.answerVotes, newVote]
     },
-    downvote () {
-
+    removeVote (voter) {
+      this.answerVotes = this.answerVotes.filter((vote) => {
+        return vote.voter !== voter
+      })
+    },
+    updateVote (updatedVote) {
+      this.answerVotes = this.answerVotes.map((vote) => {
+        if (vote._id === updatedVote._id) return updatedVote
+        return vote
+      })
+    },
+    async vote (mode) {
+      try {
+        const url = `/questions/${this.slug}/answers/${this.answerId}/${mode}`
+        const { data } = await axios.post(url)
+        if (data.updatedVote) {
+          this.updateVote(data.updatedVote)
+        } else if (data.newVote) {
+          this.addNewVote(data.newVote)
+        } else if (data.deletedVote) {
+          this.removeVote(data.deletedVote.voter)
+        }
+      } catch (e) {
+        console.log(e)
+        console.log(e.response)
+      }
     }
+  },
+  async created () {
+    const { slug } = this.$route.params
+    const url = `/questions/${slug}/answers/${this.answerId}`
+    const { data } = await axios.get(url)
+    this.answer = data.answer
+    this.answerVotes = data.answer.votes
   }
 }
 </script>

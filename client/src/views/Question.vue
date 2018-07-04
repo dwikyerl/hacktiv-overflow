@@ -16,7 +16,7 @@
               </h3>
               <vq-answer-card v-if="renderAnswer" v-for="answer in this.question.answers"
                 :key="answer._id"
-                :answer="answer"></vq-answer-card>
+                :answerId="answer._id"></vq-answer-card>
             </div>
             <div class="question__post-answer-section">
               <h3 class="question__subtitle">
@@ -64,7 +64,6 @@ export default {
     this.fetchQuestionBySlug(slug)
   },
   beforeRouteLeave (to, from, next) {
-    console.log(to)
     this.setQuestion(null)
     next()
   }

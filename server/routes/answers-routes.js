@@ -15,6 +15,10 @@ router.route('/')
   )
 
 router.route('/:answerId')
+  .get(
+    authMiddlewares.verifyToken,
+    catchErrors(answersControllers.fetchAnswerById)
+  )
   .delete(
     authMiddlewares.verifyToken,
     catchErrors(answersControllers.deleteAnswer)
@@ -23,5 +27,13 @@ router.route('/:answerId')
     authMiddlewares.verifyToken,
     catchErrors(answersControllers.updateAnswer)
   )
+
+router.post('/:answerId/upvote',
+  authMiddlewares.verifyToken,
+  catchErrors(answersControllers.upvote))
+
+router.post('/:answerId/downvote',
+  authMiddlewares.verifyToken,
+  catchErrors(answersControllers.downvote))
 
 module.exports = router;

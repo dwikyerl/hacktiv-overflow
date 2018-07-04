@@ -73,13 +73,13 @@ questionSchema.statics.getQuestionBySlug = function(slug) {
     }},
     { $lookup: {
       from: 'votes', localField: '_id', 
-      foreignField: 'answer', as: 'answer.votes' }},
+      foreignField: 'answer', as: 'answer.answerVotes' }},
     { $project: {
       title: 1,
       content: 1,
       'author': '$author.username',
       slug: 1,
-      'answer.id': '$answer._id',
+      'answer._id': '$answer._id',
       'answer.content': '$answer.content',
       'answer.author': '$answer.author.username',
       'answer.question': '$answer.question',

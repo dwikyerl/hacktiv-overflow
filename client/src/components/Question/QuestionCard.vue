@@ -4,7 +4,7 @@
       <a
         @click="upvote"
         class="question-card__vote-arrow"
-        :class="{ disabled: !canUpvote }">
+        :class="{ disabled: isThisQuestionOwner }">
         <b-icon
           custom-size="mdi-48px"
           custom-class="question-card__vote-arrow-icon"
@@ -14,7 +14,7 @@
       <a
         @click="downvote"
         class="question-card__vote-arrow"
-        :class="{ disabled: !canDownvote }">
+        :class="{ disabled: isThisQuestionOwner }">
         <b-icon
           custom-size="mdi-48px"
           custom-class="question-card__vote-arrow-icon"
@@ -62,20 +62,6 @@ export default {
         acc += +vote.value
         return acc
       }, 0)
-    },
-    canUpvote () {
-      if (this.isThisQuestionOwner) return false
-      const hasUpvote = this.questionVotes.some((vote) => {
-        return vote.voter === this.id && vote.value === 1
-      })
-      return !hasUpvote
-    },
-    canDownvote () {
-      if (this.isThisQuestionOwner) return false
-      const hasDownvote = this.questionVotes.some((vote) => {
-        return vote.voter === this.id && vote.value === -1
-      })
-      return !hasDownvote
     }
   },
   methods: {
