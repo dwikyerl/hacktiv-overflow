@@ -14,12 +14,6 @@ const Login = resolve => {
   }, 'login')
 }
 
-const AllQuestions = resolve => {
-  require.ensure(['./views/AllQuestions.vue'], () => {
-    resolve(require('./views/AllQuestions.vue'))
-  }, 'all-questions')
-}
-
 const Question = resolve => {
   require.ensure(['./views/Question.vue'], () => {
     resolve(require('./views/Question.vue'))
@@ -51,11 +45,6 @@ export default new Router({
       path: '/signup',
       name: 'signup',
       component: Signup
-    },
-    {
-      path: '/questions',
-      name: 'questions',
-      component: AllQuestions
     },
     {
       path: '/questions/ask',

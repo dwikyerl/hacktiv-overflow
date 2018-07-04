@@ -1,9 +1,9 @@
 <template>
-  <section class="hero is-primary">
+  <section class="home-hero hero is-primary">
     <div class="hero-body">
       <div class="container">
         <div class="columns">
-          <div class="column hero-text is-flex section">
+          <div class="column home-hero__text is-flex section">
             <h1 class="title">
               Learn, Share, Build
             </h1>
@@ -32,9 +32,12 @@ export default {
 </script>
 
 <style lang="scss">
-.hero-text {
-  justify-content: center;
-  flex-flow: column nowrap;
-  color: #fff;
+.home-hero {
+
+  &__text {
+    justify-content: center;
+    flex-flow: column nowrap;
+    color: #fff;
+  }
 }
 </style>
