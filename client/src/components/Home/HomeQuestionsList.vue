@@ -4,16 +4,8 @@
       <div class="tile is-parent is-8">
         <h1 class="is-size-4 is-child">All Questions</h1>
       </div>
-      <div v-if="isLoggedIn" class="ask-button-container tile is-parent">
-        <div class="is-child is-pull-right">
-          <router-link :to="{ name: 'ask' }" class="button is-info">
-            <b-icon icon="message-text"></b-icon>
-            <span>Ask Question</span>
-          </router-link>
-        </div>
-      </div>
     </div>
-    <div class="h-questions__list">
+    <div v-if="questions" class="h-questions__list">
       <vh-question-card
         v-for="question in questions"
         :key="question._id"

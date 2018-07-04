@@ -27,12 +27,13 @@ exports.fetchQuestions = async (req, res) => {
 
 exports.fetchQuestionBySlug = async (req, res) => {
   const { slug } = req.params;
-  const question = await Question.findOne({ slug });
-
-  if (question) {
+  // const question = await Question.findOne({ slug });
+  const questions = await Question.getQuestionBySlug(slug);
+  console.log(questions)
+  if (questions.length > 0) {
     res.status(200).json({
       message: 'Question retrieved successfully',
-      question,
+      question: questions[0],
     });
   } else {
     res.status(404).json({

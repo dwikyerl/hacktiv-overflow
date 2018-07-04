@@ -39,6 +39,10 @@
       </div>
 
       <div v-else class="navbar-end">
+        <router-link :to="{ name: 'ask' }" class="navbar-item">
+            <b-icon icon="message-text"></b-icon>
+            <span>Ask Question</span>
+        </router-link>
         <div class="navbar-item has-dropdown is-hoverable">
           <a class="navbar-link">
             Account

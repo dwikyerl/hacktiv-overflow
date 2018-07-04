@@ -1,5 +1,5 @@
 <template>
-  <div class="h-question-card tile is-ancestor">
+  <div v-if="question" class="h-question-card tile is-ancestor">
     <div class="tile is-parent">
       <div class="tile is-child">
         <div class="h-question-card__stat">
@@ -27,7 +27,7 @@
       <div class="tile is-child">
         <p class="is-pulled-right is-size-7">
           <span class="has-text-weight-light">asked {{ formattedTime }} ago by </span>
-          <span>{{ question.author.username }}</span>
+          <span>{{ question.author }}</span>
         </p>
       </div>
     </div>
