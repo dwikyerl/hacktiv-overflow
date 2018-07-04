@@ -22,13 +22,6 @@
               <h3 class="question__subtitle">
                 Your Answer
               </h3>
-              <form>
-                <quill-editor
-                  v-model="answerContent"
-                  >
-                </quill-editor>
-                <button class="button is-info answer-button">Post Answer</button>
-              </form>
             </div>
           </div>
         </div>
@@ -39,9 +32,7 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
-import { quillEditor } from 'vue-quill-editor'
 import QuestionCard from '@/components/Question/QuestionCard'
-import QuestionForm from '@/components/Question/QuestionForm'
 import AnswerCard from '@/components/Question/AnswerCard'
 
 export default {
@@ -53,8 +44,7 @@ export default {
   },
   components: {
     'vq-question-card': QuestionCard,
-    'vq-answer-card': AnswerCard,
-    quillEditor
+    'vq-answer-card': AnswerCard
   },
   computed: {
     ...mapGetters('questions', ['question']),
@@ -74,6 +64,7 @@ export default {
     this.fetchQuestionBySlug(slug)
   },
   beforeRouteLeave (to, from, next) {
+    console.log(to)
     this.setQuestion(null)
     next()
   }

@@ -26,6 +26,12 @@ const Ask = resolve => {
   }, 'ask')
 }
 
+const EditQuestion = resolve => {
+  require.ensure(['./views/EditQuestion.vue'], () => {
+    resolve(require('./views/EditQuestion.vue'))
+  }, 'edit-question')
+}
+
 Vue.use(Router)
 
 export default new Router({
@@ -55,6 +61,11 @@ export default new Router({
       path: '/questions/:slug',
       name: 'question',
       component: Question
+    },
+    {
+      path: '/questions/:slug/edit',
+      name: 'edit-question',
+      component: EditQuestion
     }
   ],
   linkExactActiveClass: 'is-active'

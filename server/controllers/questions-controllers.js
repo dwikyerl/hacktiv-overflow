@@ -100,7 +100,7 @@ exports.upvote = async (req, res) => {
     await vote.save()
     return res.status(200).json({
       message: 'Upvote question',
-      vote
+      updatedVote: vote
     });
   }
 
@@ -117,7 +117,7 @@ exports.upvote = async (req, res) => {
     const newVote = await Vote.create({ question: slug, voter: req.user.id, value: 1 });
     return res.status(201).json({
       message: 'Upvote added',
-      upvote: newVote
+      newVote
     });
   }
   return res.status(403).json({
@@ -133,7 +133,7 @@ exports.downvote = async (req, res) => {
     await vote.save()
     return res.status(200).json({
       message: 'Downvote question',
-      vote
+      updatedVote: vote
     });
   }
 
@@ -151,7 +151,7 @@ exports.downvote = async (req, res) => {
     const newVote = await Vote.create({ question: slug, voter: req.user.id, value: -1 });
     return res.status(201).json({
       message: 'Downvote added',
-      upvote: newVote
+      newVote
     });
   }
   return res.status(403).json({

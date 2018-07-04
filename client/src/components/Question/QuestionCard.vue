@@ -1,14 +1,20 @@
 <template>
   <div class="question-card">
     <div class="question-card__vote">
-      <a @click="upvote" class="question-card__vote-arrow">
+      <a
+        @click="upvote"
+        class="question-card__vote-arrow"
+        :class="{ disabled: !canUpvote }">
         <b-icon
           custom-size="mdi-48px"
           custom-class="question-card__vote-arrow-icon"
           icon="menu-up"></b-icon>
       </a>
-      <p class="question-card__vote-total">{{ question.totalVotes }}</p>
-      <a @click="downvote" class="question-card__vote-arrow">
+      <p class="question-card__vote-total">{{ totalVotes }}</p>
+      <a
+        @click="downvote"
+        class="question-card__vote-arrow"
+        :class="{ disabled: !canDownvote }">
         <b-icon
           custom-size="mdi-48px"
           custom-class="question-card__vote-arrow-icon"
@@ -18,7 +24,15 @@
     <div class="question-card__question">
       <div class="question-card__content" v-html="question.content"></div>
       <div class="question-card__extras">
-        <a class="is-pulled-right">Edit</a>
+        <div v-if="isThisQuestionOwner" class="level is-mobile question-card__options">
+          <div class="level-item">
+            <a @click.prevent="submitDeleteQuestion">Delete</a>
+          </div>
+          <div class="level-item">
+            <router-link
+              :to="{ name: 'edit-question', params: { slug: this.question.slug }}" class="is-pulled-right">Edit</router-link>
+          </div>
+        </div>
         <div class="question-card__info is-pulled-right">
           <span class="has-text-weight-light">asked at {{ formattedTime }} </span>
           <span class="question-card__author">by {{ question.author[0] }}</span>
@@ -29,23 +43,58 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 import moment from 'moment'
 
 export default {
-  name: 'Question',
+  name: 'QuestionCard',
   computed: {
-    ...mapGetters('questions', ['question']),
+    ...mapGetters('questions', ['question', 'questionVotes']),
+    ...mapGetters('user', ['username', 'id']),
     formattedTime () {
       return moment(this.question.createdAt).format('MMM D YYYY, h:mm a')
+    },
+    isThisQuestionOwner () {
+      return this.question.author[0] === this.username
+    },
+    totalVotes () {
+      return this.questionVotes.reduce((acc, vote) => {
+        acc += +vote.value
+        return acc
+      }, 0)
+    },
+    canUpvote () {
+      if (this.isThisQuestionOwner) return false
+      const hasUpvote = this.questionVotes.some((vote) => {
+        return vote.voter === this.id && vote.value === 1
+      })
+      return !hasUpvote
+    },
+    canDownvote () {
+      if (this.isThisQuestionOwner) return false
+      const hasDownvote = this.questionVotes.some((vote) => {
+        return vote.voter === this.id && vote.value === -1
+      })
+      return !hasDownvote
     }
   },
   methods: {
+    ...mapActions('questions', ['deleteQuestion', 'upvoteQuestion', 'downvoteQuestion']),
+    submitDeleteQuestion () {
+      this.$dialog.confirm({
+        title: 'Deleting Article',
+        message: 'Are you sure you want to <b>delete</b> this question? This action cannot be undone.',
+        confirmText: 'Delete Question',
+        type: 'is-danger',
+        hasIcon: true,
+        onConfirm: () => this.deleteQuestion(this.question.slug)
+      })
+    },
     upvote () {
-
+      this.upvoteQuestion(this.question.slug)
     },
     downvote () {
-
+      this.downvoteQuestion(this.question.slug)
     }
   }
 }
@@ -54,9 +103,20 @@ export default {
 <style lang="scss">
 @import "@/assets/scss/main.scss";
 
+.disabled {
+  pointer-events: none;
+  cursor: default;
+  text-decoration: none;
+  color: #ccc !important;
+}
+
 .question-card {
   display: flex;
   padding: 1rem;
+
+  &__options {
+    margin-bottom: .5rem !important;
+  }
 
   &__content {
     padding-bottom: 1rem;
