@@ -1,15 +1,16 @@
 <template>
   <nav class="navbar is-fixed-top" role="navigation" aria-label="main navigation">
     <div class="navbar-brand">
-      <a class="navbar-item" href="https://bulma.io">
+      <router-link :to="{ name: 'home' }" class="navbar-item">
         <b-icon icon="chart-bar-stacked"></b-icon>
         <span>Hacktiv Overflow</span>
-      </a>
+      </router-link>
       <a
         role="button"
         class="navbar-burger"
         aria-label="menu"
         aria-expanded="false"
+        @click="toggleBurger"
         :class="{ 'is-active': isBurgerActive }">
         <span aria-hidden="true"></span>
         <span aria-hidden="true"></span>
@@ -18,7 +19,7 @@
     </div>
 
     <div class="navbar-menu" :class="{ 'is-active': isBurgerActive }">
-      <div class="navbar-end">
+      <div v-if="!isLoggedIn" class="navbar-end">
         <div class="navbar-item">
           <div class="field is-grouped">
             <p class="control">
@@ -33,6 +34,24 @@
                 <span>Sign Up</span>
               </router-link>
             </p>
+          </div>
+        </div>
+      </div>
+
+      <div v-else class="navbar-end">
+        <div class="navbar-item has-dropdown is-hoverable">
+          <a class="navbar-link">
+            Account
+          </a>
+          <div class="navbar-dropdown is-right">
+            <div class="navbar-item">
+              <p>Logged in as <strong>{{ username }}</strong></p>
+            </div>
+            <hr class="navbar-divider">
+            <a @click.prevent="logout" class="navbar-item">
+              <b-icon icon="logout"></b-icon>
+              <span>Logout</span>
+            </a>
           </div>
         </div>
       </div>
@@ -51,7 +70,7 @@ export default {
     ...mapGetters(['isBurgerActive'])
   },
   methods: {
-    ...mapActions('auth', ['signOut']),
+    ...mapActions('auth', ['logout']),
     ...mapActions(['toggleBurger'])
   }
 }

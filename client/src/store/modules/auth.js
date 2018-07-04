@@ -16,21 +16,21 @@ const mutations = {
 }
 
 const actions = {
-  signOut ({ commit, dispatch }) {
+  logout ({ commit, dispatch }) {
     commit('setToken', null)
     window.localStorage.removeItem('hoverflow_token')
     dispatch('user/resetUserData', null, { root: true })
     commit('setIsBurgerActive', false, { root: true })
     this._vm.$toast.open({
       duration: 1000,
-      message: 'Signed out successfully',
-      type: 'is-success'
+      message: 'Logout successfully',
+      type: 'is-info'
     })
     router.push({ name: 'home' })
   },
-  async signIn ({ commit, dispatch }, loginData) {
+  async login ({ commit, dispatch }, loginData) {
     try {
-      const { data } = await axios.post('/signin', loginData)
+      const { data } = await axios.post('/login', loginData)
       commit('setToken', data.token)
       window.localStorage.setItem('hoverflow_token', data.token)
 
@@ -38,8 +38,8 @@ const actions = {
       router.push({ name: 'home' })
       this._vm.$toast.open({
         duration: 1000,
-        message: 'Signed in successfully!',
-        type: 'is-success'
+        message: 'Login in successfully!',
+        type: 'is-info'
       })
     } catch (e) {
       console.log(e.response)

@@ -25,7 +25,37 @@ const mutations = {
 }
 
 const actions = {
-  async getUserInfo ({ rootState, commit }) {
+  async signup ({ dispatch }, signupData) {
+    try {
+      const { data } = await axios.post('/users/signup', signupData)
+
+      const userData = {
+        username: signupData.username,
+        password: signupData.password
+      }
+
+      this._vm.$toast.open({
+        duration: 1000,
+        message: data.message,
+        type: 'is-info'
+      })
+
+      dispatch('auth/login', userData, { root: true })
+    } catch (e) {
+      console.log(e)
+      if (e.response) {
+        console.log(e.response)
+        e.response.data.errors.forEach(error => {
+          this._vm.toast.open({
+            duration: 1000,
+            message: error.msg,
+            type: 'is-danger'
+          })
+        })
+      }
+    }
+  },
+  async getUserInfo ({ commit }) {
     const { data } = await axios.get('/users/me')
 
     commit('setId', data.user.id)

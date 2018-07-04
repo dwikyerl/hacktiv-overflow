@@ -35,7 +35,8 @@ questionSchema.statics.getQuestions = function() {
       foreignField: '_id', as: 'author' }},
     { $lookup: {
       from: 'votes', localField: 'slug', 
-      foreignField: 'question', as: 'votes' }}, 
+      foreignField: 'question', as: 'votes' }},
+    { $unwind: '$author'},
     { $project: {
       title: '$$ROOT.title',
       content: '$$ROOT.content',

@@ -7,9 +7,11 @@ exports.signup = async (req, res) => {
     password: req.body.password,
   };
 
-  await User.create(registerData);
+  const user = await User.create(registerData);
 
-  res.status(200).json({ message: 'Registered successfully' });
+  const token = await user.generateToken();
+
+  res.status(200).json({ message: 'Registered successfully', token });
 }
 
 exports.getUserInfo = async (req, res) => {

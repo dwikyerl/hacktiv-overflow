@@ -1,40 +1,45 @@
 <template>
   <div class="home">
-    <section class="hero is-primary">
-      <div class="hero-body">
-        <div class="container">
-          <div class="columns">
-            <div class="column hero-text">
-              <h1 class="title">
-                Learn, Share, Build
-              </h1>
-              <h2 class="subtitle">
-                Hacktiv Overflow is a place to learn, share, build your knowledge
-              </h2>
-            </div>
-            <div class="column">
-              <v-home-signup></v-home-signup>
-            </div>
-          </div>
+    <vh-hero v-if="!isLoggedIn"></vh-hero>
+    <div class="container">
+      <div class="columns is-centered">
+        <div class="column is-8-tablet is-8-desktop">
+          <vh-questions></vh-questions>
         </div>
       </div>
-    </section>
+    </div>
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
-import HomeSignup from '@/components/Home/HomeSignup'
+import { mapActions, mapGetters } from 'vuex'
+import HomeHero from '@/components/Home/HomeHero'
+import HomeQuestionsList from '@/components/Home/HomeQuestionsList'
 
 export default {
   name: 'home',
   components: {
-    'v-home-signup': HomeSignup
+    'vh-hero': HomeHero,
+    'vh-questions': HomeQuestionsList
+  },
+  computed: {
+    ...mapGetters('auth', ['isLoggedIn'])
+  },
+  methods: {
+    ...mapActions('questions', ['fetchQuestions'])
+  },
+  created () {
+    this.fetchQuestions()
   }
 }
 </script>
 
 <style lang="scss">
+.home {
+  background-color: #e0e0e0;
+  min-height: 100vh;
+}
 .hero-text {
   display: flex;
   justify-content: center;

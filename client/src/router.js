@@ -55,19 +55,17 @@ export default new Router({
     {
       path: '/questions',
       name: 'questions',
-      component: AllQuestions,
-      children: [
-        {
-          path: ':slug',
-          name: 'question',
-          component: Question
-        },
-        {
-          path: 'ask',
-          name: 'ask',
-          component: Ask
-        }
-      ]
+      component: AllQuestions
+    },
+    {
+      path: '/questions/ask',
+      name: 'ask',
+      component: Ask
+    },
+    {
+      path: '/questions/:slug',
+      name: 'question',
+      component: Question
     }
   ],
   linkExactActiveClass: 'is-active'

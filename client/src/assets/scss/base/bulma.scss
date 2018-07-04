@@ -30,6 +30,14 @@ span.icon {
     margin-left: 0;
 }
 
+.link-primary {
+    color: $primary;
+
+    &:hover {
+        color: $primary-invert
+    }
+}
+
 // Import Bulma and Buefy styles
 @import "~bulma";
 @import "~buefy/src/scss/buefy";
