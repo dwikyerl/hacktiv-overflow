@@ -73,7 +73,7 @@ export default {
           hasIcon: true,
           onConfirm: () => this.editQuestion({
             updateData: questionData,
-            questionSlug: this.question.slug
+            slug: this.question.slug
           })
         })
       } else {

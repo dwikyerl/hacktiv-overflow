@@ -4,7 +4,7 @@
       <a
         @click="() => vote('upvote')"
         class="answer-card__vote-arrow"
-        :class="{ disabled: isThisAnswerOwner }">
+        :class="{ disabled: !canVote }">
         <b-icon
           custom-size="mdi-48px"
           custom-class="answer-card__vote-arrow-icon"
@@ -14,7 +14,7 @@
       <a
         @click="() => vote('downvote')"
         class="answer-card__vote-arrow"
-        :class="{ disabled: isThisAnswerOwner }">
+        :class="{ disabled: !canVote }">
         <b-icon
           custom-size="mdi-48px"
           custom-class="answer-card__vote-arrow-icon"
@@ -29,8 +29,7 @@
             <a @click.prevent="submitDeleteAnswer">Delete</a>
           </div>
           <div class="level-item">
-            <router-link
-              :to="{ name: 'edit-question', params: { slug: this.slug }}" class="is-pulled-right">Edit</router-link>
+            <a @click.prevent="openEditModal">Edit</a>
           </div>
         </div>
         <div class="answer-card__info is-pulled-right">
@@ -46,6 +45,7 @@
 import moment from 'moment'
 import axios from '@/axios'
 import { mapGetters, mapActions } from 'vuex'
+import AnswerModalForm from '@/components/Answer/AnswerModalForm'
 
 export default {
   name: 'AnswerCard',
@@ -61,6 +61,7 @@ export default {
   },
   computed: {
     ...mapGetters('user', ['username', 'id']),
+    ...mapGetters('auth', ['isLoggedIn']),
     formattedTime () {
       return moment(this.answer.createdAt).format('MMM D YYYY, h:mm a')
     },
@@ -72,6 +73,9 @@ export default {
     },
     isThisAnswerOwner () {
       return this.answer.author.username === this.username
+    },
+    canVote () {
+      return this.isLoggedIn && !this.isThisAnswerOwner
     }
   },
   methods: {
@@ -118,6 +122,16 @@ export default {
         console.log(e)
         console.log(e.response)
       }
+    },
+    openEditModal () {
+      this.$modal.open({
+        parent: this,
+        component: AnswerModalForm,
+        hasModalCard: true,
+        props: {
+          answer: this.answer
+        }
+      })
     }
   },
   async created () {

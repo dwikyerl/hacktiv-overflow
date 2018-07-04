@@ -20,10 +20,12 @@
                 :key="answer._id"
                 :answerId="answer._id"></vq-answer-card>
             </div>
-            <div class="question__post-answer-section">
+            <div v-if="!isThisQuestionOwner && isLoggedIn" class="question__post-answer-section">
               <h3 class="question__subtitle">
                 Your Answer
               </h3>
+              <vq-answer-form>
+              </vq-answer-form>
             </div>
           </div>
         </div>
@@ -36,26 +38,28 @@
 import { mapActions, mapGetters } from 'vuex'
 import QuestionCard from '@/components/Question/QuestionCard'
 import AnswerCard from '@/components/Question/AnswerCard'
+import AnswerForm from '@/components/Question/AnswerForm'
 
 export default {
   name: 'Question',
-  data () {
-    return {
-      answerContent: ''
-    }
-  },
   components: {
     'vq-question-card': QuestionCard,
-    'vq-answer-card': AnswerCard
+    'vq-answer-card': AnswerCard,
+    'vq-answer-form': AnswerForm
   },
   computed: {
     ...mapGetters('questions', ['question', 'questionAnswers']),
+    ...mapGetters('user', ['username']),
+    ...mapGetters('auth', ['isLoggedIn']),
     renderAnswer () {
       return this.question.answers[0].author.length > 0
     },
     totalAnswers () {
       if (this.renderAnswer) return this.question.answers.length
       return 0
+    },
+    isThisQuestionOwner () {
+      return this.question.author[0] === this.username
     }
   },
   methods: {

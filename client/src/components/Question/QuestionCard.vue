@@ -4,7 +4,7 @@
       <a
         @click="upvote"
         class="question-card__vote-arrow"
-        :class="{ disabled: isThisQuestionOwner }">
+        :class="{ disabled: !canVote }">
         <b-icon
           custom-size="mdi-48px"
           custom-class="question-card__vote-arrow-icon"
@@ -14,7 +14,7 @@
       <a
         @click="downvote"
         class="question-card__vote-arrow"
-        :class="{ disabled: isThisQuestionOwner }">
+        :class="{ disabled: !canVote }">
         <b-icon
           custom-size="mdi-48px"
           custom-class="question-card__vote-arrow-icon"
@@ -51,11 +51,15 @@ export default {
   computed: {
     ...mapGetters('questions', ['question', 'questionVotes']),
     ...mapGetters('user', ['username', 'id']),
+    ...mapGetters('auth', ['isLoggedIn']),
     formattedTime () {
       return moment(this.question.createdAt).format('MMM D YYYY, h:mm a')
     },
     isThisQuestionOwner () {
       return this.question.author[0] === this.username
+    },
+    canVote () {
+      return this.isLoggedIn && !this.isThisQuestionOwner
     },
     totalVotes () {
       return this.questionVotes.reduce((acc, vote) => {

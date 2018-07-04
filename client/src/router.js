@@ -45,17 +45,38 @@ export default new Router({
     {
       path: '/login',
       name: 'login',
-      component: Login
+      component: Login,
+      beforeEnter (to, from, next) {
+        if (!localStorage.getItem('hoverflow_token')) {
+          next()
+        } else {
+          next({ name: 'home' })
+        }
+      }
     },
     {
       path: '/signup',
       name: 'signup',
-      component: Signup
+      component: Signup,
+      beforeEnter (to, from, next) {
+        if (!localStorage.getItem('hoverflow_token')) {
+          next()
+        } else {
+          next({ name: 'home' })
+        }
+      }
     },
     {
       path: '/questions/ask',
       name: 'ask',
-      component: Ask
+      component: Ask,
+      beforeEnter (to, from, next) {
+        if (localStorage.getItem('hoverflow_token')) {
+          next()
+        } else {
+          next({ name: 'login' })
+        }
+      }
     },
     {
       path: '/questions/:slug',
@@ -65,7 +86,14 @@ export default new Router({
     {
       path: '/questions/:slug/edit',
       name: 'edit-question',
-      component: EditQuestion
+      component: EditQuestion,
+      beforeEnter (to, from, next) {
+        if (localStorage.getItem('hoverflow_token')) {
+          next()
+        } else {
+          next({ name: 'login' })
+        }
+      }
     }
   ],
   linkExactActiveClass: 'is-active'

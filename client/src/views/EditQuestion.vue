@@ -22,14 +22,18 @@ export default {
     'vq-form': QuestionForm
   },
   computed: {
-    ...mapGetters('questions', ['question'])
+    ...mapGetters('questions', ['question']),
+    ...mapGetters('user', ['username'])
   },
   methods: {
     ...mapActions('questions', ['setQuestion', 'fetchQuestionBySlug'])
   },
-  created () {
+  async created () {
     const { slug } = this.$route.params
-    this.fetchQuestionBySlug(slug)
+    await this.fetchQuestionBySlug(slug)
+    if (this.question.author[0] !== this.username) {
+      this.$router.push({ name: 'home' })
+    }
   },
   beforeRouteLeave (to, from, next) {
     this.setQuestion(null)

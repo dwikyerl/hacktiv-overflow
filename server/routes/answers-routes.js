@@ -16,7 +16,6 @@ router.route('/')
 
 router.route('/:answerId')
   .get(
-    authMiddlewares.verifyToken,
     catchErrors(answersControllers.fetchAnswerById)
   )
   .delete(

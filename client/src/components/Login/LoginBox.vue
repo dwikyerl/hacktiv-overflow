@@ -10,15 +10,6 @@
     </div>
 
     <div class="field">
-      <button class="button is-inverted is-fullwidth is-hoverable">
-        <span class="icon">
-          <img src="@/assets/google_logo.svg" alt="google-logo">
-        </span>
-        <span>Login with Google</span>
-      </button>
-    </div>
-
-    <div class="field">
       <button @click.prevent="authenticateFb" class="button is-info is-fullwidth is-hoverable">
         <b-icon icon="facebook"></b-icon>
         <span>Login with Facebook</span>

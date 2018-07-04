@@ -1,22 +1,12 @@
 <template>
   <div class="home-signup">
-    <div class="columns">
-      <div class="column">
-        <button class="button is-inverted is-hoverable is-fullwidth">
-          <span class="icon">
-            <img src="@/assets/google_logo.svg" alt="google-logo">
-          </span>
-          <span>Google</span>
-        </button>
-      </div>
 
-      <div class="column">
-        <button class="button is-info is-hoverable is-fullwidth">
-          <b-icon icon="facebook"></b-icon>
-          <span>Facebook</span>
-        </button>
-      </div>
-    </div>
+    <b-field>
+      <button class="button is-info is-hoverable is-fullwidth">
+        <b-icon icon="facebook"></b-icon>
+        <span>Facebook</span>
+      </button>
+    </b-field>
 
     <b-field>
       <p class="is-size-6 has-text-centered">Or</p>

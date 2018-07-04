@@ -29,7 +29,7 @@ exports.fetchQuestionBySlug = async (req, res) => {
   const { slug } = req.params;
   // const question = await Question.findOne({ slug });
   const questions = await Question.getQuestionBySlug(slug);
-  console.log(questions)
+
   if (questions.length > 0) {
     res.status(200).json({
       message: 'Question retrieved successfully',
@@ -49,6 +49,8 @@ exports.updateQuestion = async (req, res) => {
 
   if (req.body.title) updateData.title = req.body.title;
   if (req.body.content) updateData.content = req.body.content;
+
+  console.log(slug, req.user.id)
 
   const question = await Question.findOne({ slug, author: req.user.id });
 
