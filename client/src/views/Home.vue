@@ -1,18 +1,49 @@
 <template>
   <div class="home">
-    <img src="../assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <vh-hero v-if="!isLoggedIn"></vh-hero>
+    <div class="container">
+      <div class="columns is-centered">
+        <div class="column is-8-tablet is-8-desktop">
+          <vh-questions></vh-questions>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
-import HelloWorld from '@/components/HelloWorld.vue'
+import { mapActions, mapGetters } from 'vuex'
+import HomeHero from '@/components/Home/HomeHero'
+import HomeQuestionsList from '@/components/Home/HomeQuestionsList'
 
 export default {
   name: 'home',
   components: {
-    HelloWorld
+    'vh-hero': HomeHero,
+    'vh-questions': HomeQuestionsList
+  },
+  computed: {
+    ...mapGetters('auth', ['isLoggedIn'])
+  },
+  methods: {
+    ...mapActions('questions', ['fetchQuestions'])
+  },
+  created () {
+    this.fetchQuestions()
   }
 }
 </script>
+
+<style lang="scss">
+.home {
+  background-color: #e3f2fd;
+  min-height: 100vh;
+}
+.hero-text {
+  display: flex;
+  justify-content: center;
+  flex-flow: column nowrap;
+  color: #fff;
+}
+</style>

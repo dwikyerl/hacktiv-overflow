@@ -15,7 +15,7 @@ const answerSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: 'User'
   }
-}, { timestamps: true,  });
+}, { timestamps: true, toJSON: { virtuals: true }, toObject: { virtuals: true }  });
 
 answerSchema.virtual('votes', {
   ref: 'Vote', // what model to link?
@@ -35,6 +35,7 @@ function autopopulate(next) {
 
 answerSchema.pre('find', autopopulate);
 answerSchema.pre('findOne', autopopulate);
+answerSchema.pre('findById', autopopulate);
 
 const Answer = mongoose.model('Answer', answerSchema);
 
