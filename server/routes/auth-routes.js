@@ -11,11 +11,6 @@ router.post(
   catchErrors(authControllers.login)
 );
 
-router.get(
-  '/verify-admin',
-  authMiddlewares.verifyToken,
-  authMiddlewares.authorizeAdmin,
-  authControllers.verifyAdmin
-);
+router.post('/login/oauth', catchErrors(authControllers.oauth));
 
 module.exports = router;

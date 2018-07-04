@@ -1,3 +1,6 @@
+import firebase from 'firebase/app'
+import 'firebase/auth'
+import firebaseApp from './../../firebase'
 import axios from '@/axios'
 import router from './../../router'
 
@@ -53,6 +56,36 @@ const actions = {
     }
     // commit('setIsLoginLoading', false, { root: true })
     commit('setIsBurgerActive', false, { root: true })
+  },
+  async oauthLogin ({ commit, dispatch }, accessToken) {
+    try {
+      const { data } = await axios.post('/login/oauth', { accessToken })
+      commit('setToken', data.token)
+      window.localStorage.setItem('hoverflow_token', data.token)
+      await dispatch('user/getUserInfo', null, { root: true })
+      this._vm.$toast.open({
+        duration: 1000,
+        message: 'Login in successfully!',
+        type: 'is-info'
+      })
+      router.push({ name: 'home' })
+    } catch (e) {
+      if (e.response) {
+        this._vm.$toast.open({
+          duration: 1000,
+          message: 'Can\'t login with Facebook',
+          type: 'is-danger'
+        })
+      }
+    }
+  },
+  authenticateFb ({ dispatch }) {
+    const authProvider = new firebase.auth.FacebookAuthProvider()
+    authProvider.addScope('email')
+    firebaseApp.auth().signInWithPopup(authProvider)
+      .then((authData) => {
+        dispatch('oauthLogin', authData.credential.accessToken)
+      })
   }
 }
 

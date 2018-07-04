@@ -63,7 +63,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions('auth', ['login']),
+    ...mapActions('auth', ['login', 'authenticateFb']),
     submitLogin () {
       const loginData = {
         username: this.username,

@@ -2,7 +2,7 @@
   <div class="home-signup">
 
     <b-field>
-      <button class="button is-info is-hoverable is-fullwidth">
+      <button @click.prevent="authenticateFb" class="button is-info is-hoverable is-fullwidth">
         <b-icon icon="facebook"></b-icon>
         <span>Facebook</span>
       </button>
@@ -75,6 +75,7 @@ export default {
   },
   methods: {
     ...mapActions('user', ['signup']),
+    ...mapActions('auth', ['authenticateFb']),
     async submitSignup () {
       const signupData = {
         name: this.name,
