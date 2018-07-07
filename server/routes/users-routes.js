@@ -12,6 +12,16 @@ router.post(
 );
 
 router.get(
+  '/confirmation/:token',
+  usersControllers.confirmationPost
+)
+
+router.post(
+  '/resend',
+  usersControllers.resendTokenPost
+)
+
+router.get(
   '/me',
   authMiddlewares.verifyToken,
   usersControllers.getUserInfo

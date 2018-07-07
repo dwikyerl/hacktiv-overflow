@@ -1,28 +1,30 @@
 const { User } = require('./../models');
-const util = require('util');
-const jwt = require('jsonwebtoken');
 const axios = require('axios');
-
-jwt.sign = util.promisify(jwt.sign);
 
 exports.login = async (req, res) => {
   const user = await User.isValidUser(req.body.username);
   if (!user) {
-    return res.status(400).json({
+    return res.status(401).json({
       message: 'Invalid username or password',
     });
   }
   
   const match = await user.matchPassword(req.body.password);
   if (match) {
+
+    if(!user.isVerified) return res.status(401).json({
+      type: 'not-verified',
+      message: 'Your account has not been verified.'
+    });
+
     const token = await user.generateToken();
 
     res.status(200).json({
-      message: 'Signed In Successfully',
+      message: 'Logged In Successfully',
       token,
     });
   } else {
-    res.status(400).json({
+    res.status(401).json({
       message: 'Invalid username or password',
     });
   }
