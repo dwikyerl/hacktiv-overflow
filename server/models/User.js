@@ -20,14 +20,16 @@ const userSchema = new Schema(
       unique: [true, "Email has been taken"],
       required: "Email is required"
     },
+    isVerified: {
+      type: Boolean,
+      default: false
+    },
     password: {
       type: String,
       trim: true,
     },
-    role: {
-      type: String,
-      trim: true
-    }
+    passwordResetToken: String,
+    passwordResetTokenExpires: Date
   },
   { timestamps: true }
 );
